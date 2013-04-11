@@ -779,6 +779,7 @@ class GoogleMapsGeocoder {
     * @param array of geocode response
     * @return array 
     *
+    * @link https://github.com/jonah/GoogleMapsGeocoder
     * @version 1.0 jonahb0001@gmail.com  4/11/13 1:06 PM    
     */
     public function getAddressComponents($response) {
@@ -797,14 +798,16 @@ class GoogleMapsGeocoder {
             'country'=>'country',
             'postal_code'=>'postal_code'
         );
-        foreach($response['results']['0']['address_components'] AS $id=>$value) {
-            da($value);
-            $type = $value['types'][0];
-            if(in_array($type,$types)) {
-                $out[$type] = $value['short_name'];
+        if(is_array($response['results']['0']['address_components'])) {
+            foreach($response['results']['0']['address_components'] AS $id=>$value) {
+                $type = $value['types'][0];
+                if($remoteType=array_search($type,$this->types)) {
+                    $out[$remoteType] = $value['short_name'];
+                }
             }
+        } else {
+            echo "Error: No address components found for this address";
         }
-        
         return $out;
     }
 }
