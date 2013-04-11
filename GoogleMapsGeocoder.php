@@ -10,7 +10,7 @@
    * @package   GoogleMapsGeocoder
    * @version   2.0.0
    */
-  class GoogleMapsGeocoder {
+class GoogleMapsGeocoder {
 
     /**
      * HTTP URL of the Google Geocoding API.
@@ -772,7 +772,41 @@
                    'lon' => array('max' => $maxLongitude,
                                   'min' => $minLongitude));
     }
-
-  }
+    
+    /**
+    * Take an address string and return the parts of the address to be stored in database fields (USA Centric)
+    *
+    * @param array of geocode response
+    * @return array 
+    *
+    * @version 1.0 jonahb0001@gmail.com  4/11/13 1:06 PM    
+    */
+    public function getAddressComponents($response) {
+        if(!is_array($response)) {
+            echo"Error: no response given to getAddressComponents";
+        }
+        // Map google labels to standard US address language
+        $this->types = array(
+            'apt'=>'subpremise',
+            'street_number'=>'street_number',
+            'street'=>'route',
+            'neighboorhood'=>'neighborhood',
+            'city'=>'locality',
+            'state'=>'administrative_area_level_1',
+            'county'=>'administrative_area_level_2',
+            'country'=>'country',
+            'postal_code'=>'postal_code'
+        );
+        foreach($response['results']['0']['address_components'] AS $id=>$value) {
+            da($value);
+            $type = $value['types'][0];
+            if(in_array($type,$types)) {
+                $out[$type] = $value['short_name'];
+            }
+        }
+        
+        return $out;
+    }
+}
 
 ?>
