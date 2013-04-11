@@ -808,6 +808,10 @@ class GoogleMapsGeocoder {
         } else {
             echo "Error: No address components found for this address";
         }
+        
+        $out['latitude'] = $response['results'][0]['geometry']['location']['lat'];
+        $out['longitude'] = $response['results'][0]['geometry']['location']['lng'];
+        
         return $out;
     }
 }
